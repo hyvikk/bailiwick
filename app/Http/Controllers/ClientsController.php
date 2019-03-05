@@ -12,6 +12,7 @@ class ClientsController extends Controller {
 	public function index() {
 		$index['data'] = Clients::get();
 		$index['page'] = 'clients';
+
 		return view("clients.index", $index);
 	}
 
@@ -27,6 +28,7 @@ class ClientsController extends Controller {
 			'phone' => 'required|numeric',
 			'email' => 'required|email',
 			'country' => 'required',
+			'address' => 'required',
 
 		]);
 		if ($validator->fails()) {
@@ -58,6 +60,7 @@ class ClientsController extends Controller {
 			'phone' => 'required|numeric',
 			'email' => 'required|email',
 			'country' => 'required',
+			'address' => 'required',
 
 		]);
 		if ($validator->fails()) {

@@ -25,7 +25,7 @@
                           <th>Registration Date</th>
                           <th>Expires On</th>
                           <th>Days Remaining</th>
-                          <th>Amount</th>
+                          <th>Renewed On</th>
                           <th class="disabled-sorting">Actions</th>
                       </tr>
                   </thead>
@@ -38,7 +38,7 @@
                       <th>Registration Date</th>
                       <th>Expires On</th>
                       <th>Days Remaining</th>
-                      <th>Amount</th>
+                      <th>Renewed On</th>
                       <th>Actions</th>
                   </tr>
               </tfoot>
@@ -46,7 +46,7 @@
                 <?php $count = 0;?>
                 @foreach($data as $row)
                 <?php ++$count;
-$date1 = new DateTime($row->creation_date);
+$date1 = new DateTime();
 $date2 = new DateTime($row->expiry_date);
 $diff = $date2->diff($date1)->format("%a");
 $days = intval($diff);
@@ -58,13 +58,29 @@ $days = intval($diff);
                   <td>{{$row->registrar}}</td>
                   <td class="creation_date">{{date('d-m-Y',strtotime($row->creation_date))}}</td>
                   <td class="expiry_date">{{date('d-m-Y',strtotime($row->expiry_date))}}</td>
-                  <td class="remaining_days">{{ $days }}</td>
-                  <td class="amount"><?php
-if (($row->id == $row->transactions->domain_id) && ($row->transactions->flag == 'domain')) {
-	echo $currency . $row->transactions->amount;
-	?>
-<?php }?>
-</td>
+                  <?php 
+                              $current = date('Y-m-d');
+                              $start_date = strtotime($current); 
+                              $end_date = strtotime($row->expiry_date); 
+                              $diff = ($end_date - $start_date)/60/60/24;
+                              if($diff <= +45)
+                              {
+                                 
+                        ?>
+                        <td class="remaining_days" style="color:red;">{{ $diff }}</td>
+                        <?php
+                              }
+                              else
+                              {
+
+                        ?>
+                        <td class="remaining_days">{{ $diff }}</td>
+                         <?php
+                              }
+                        ?>
+                  <td class="amount">
+                    {{date('d-m-Y',strtotime($row->updated_at))}}
+                  </td>
                   <td>
                     {!! Form::open(['url' => 'domains/'.$row->id,'method'=>'DELETE','class'=>'form-horizontal']) !!}
 
@@ -78,8 +94,21 @@ if (($row->id == $row->transactions->domain_id) && ($row->transactions->flag == 
 
                     <a onClick="get_domain_trans(this.id)" title="transactions"  class="btn btn-primary"  data-toggle="modal"   id="<?php echo $row->id; ?>" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
                     <!-- <br class="hidden-xs"> -->
+                     <?php 
+                              $current = date('Y-m-d');
+                              $start_date = strtotime($current); 
+                              $end_date = strtotime($row->expiry_date); 
+                              $diff = ($end_date - $start_date)/60/60/24;
+                              if($diff <= +45)
+                              {
+                                 
+                        ?> 
                     <a href="#domain_renew_modal" title="renew domain"  class="btn btn-success domain_renew_modal" data-toggle="modal" class=""   data-id="<?php echo $row->id; ?>" data-clientid="<?php echo $row->client_id; ?>" data-expiry_date="<?php echo date('d-m-Y', strtotime($row->expiry_date)); ?>" ><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>
+                    <?php
+                      }
+                    ?>  
                     {!! Form::close() !!}
+                    
                 </td>
             </tr>
             @endforeach
@@ -95,14 +124,14 @@ if (($row->id == $row->transactions->domain_id) && ($row->transactions->flag == 
 @endsection
 
 @section('modal')
-<div class="modal fade" id="domains_modal" role="dialog">
-   <div class="modal-dialog">
+<div class="modal fade  " id="domains_modal" role="dialog">
+   <div class="modal-dialog modal-lg" >
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Transaction List</h4>
       </div>
-      <div class="modal-body domain_modal_body">
+      <div class="modal-body domain_modal_body ">
       </div>
       <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -206,7 +235,7 @@ if (($row->id == $row->transactions->domain_id) && ($row->transactions->flag == 
 
           <div class="col-md-6">
             <p id="total_year" style="font-size: 14px;">
-              <b>Domain will be renwed for:</b>
+              <b>Domain will be renewed for:</b>
           </p>
 
       </div>

@@ -27,29 +27,40 @@ if (!empty($amt_currency->currency)) {
                             <thead>
                               <tr>
                                   <th>Client Name</th>
+                                  <th>Domain</th>
                                   <th>Type</th>
                                   <th>Name</th>
                                   <th>Amount</th>
+                                  <th>Domain Purchased</th>
                                   <th>Year</th>
                                 </tr>
                               </thead>
                               <tfoot>
                                 <tr>
                                   <th>Client Name</th>
+                                  <th>Domain</th>
                                   <th>Type</th>
                                   <th>Name</th>
-                                  <th></th>
-                                  <th></th>
+                                  <th>Amount</th>
+                                  <th>Domain Purchased</th>
+                                  <th>Year</th>
                                 </tr>
                               </tfoot>
                               <tbody>
-                                @foreach($data as $row)
-
+                                @foreach($data as $row)                                  
                                 <tr>
                                   <td>{{ $row->clients->name }}</td>
+                                  <td>{{ $row->domains->domain_name??"None"}}</td>
                                   <td>{{ $row->flag }}</td>
                                   <td>{{ $row->flag=='domain'?$row->domains->domain_name:$row->hostings->hosting_provider}}</td>
                                   <td><?=$currency . $row->amount?></td>
+                                  <td>
+                                  @if($row->hostings['domain_purchase_site'] == 0)
+                                    From other site
+                                  @else
+                                    From this site
+                                  @endif
+                                  </td>
                                   <td>{{ $row->year }}</td>
                                 </tr>
                               @endforeach

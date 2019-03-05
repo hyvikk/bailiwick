@@ -25,7 +25,7 @@ class Transactions extends Model {
 		}
 	}
 	public function hostings() {
-		return $this->belongsTo('App\Hostings', 'hosting_id');
+		return $this->belongsTo('App\Hostings', 'attach_id');
 	}
 	public function domains() {
 		return $this->belongsTo('App\Domains', 'domain_id');

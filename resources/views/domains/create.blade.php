@@ -78,8 +78,8 @@
                             @if(!empty($amt_currency->currency))
                                 <?php $currency = "(" . $amt_currency->currency . ")";?>
                             @endif
-                            <label>Amount {{ $currency }}</label>
-                            <input type="text" name="amount" placeholder="Enter amount" class="form-control" value="{{ old('amount') }}">
+                            <label>Base Amount {{ $currency }}</label>
+                            <input type="text" name="amount"  placeholder="Enter amount" class="form-control" value="{{ old('amount') }}">
                         </div>
                     </div>
                 </div>
@@ -95,4 +95,27 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(document).ready(function() 
+{
+    $("#expdate").on('change', function()
+    {
+        var cdate = $("#crdate").val();
+        var cnew  = cdate.split("-").reverse().join("-");
+
+        var expdate = $("#expdate").val();
+        var enew  = expdate.split("-").reverse().join("-");        
+
+        if(cnew>enew)
+        {
+             alert("Creation date is bigger than expiry date.");
+            $("#crdate").val("");
+            $("#expdate").val("");
+        }        
+    });
+});
+</script>
 @endsection

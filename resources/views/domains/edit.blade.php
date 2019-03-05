@@ -26,13 +26,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Domain Name</label>
-                            <input type="text" name="domain_name" id="domain_name" placeholder="Enter domain name" class="form-control" value="<?=$data->domain_name; ?>">
+                            <input type="text" name="domain_name" id="domain_name" placeholder="Enter domain name" class="form-control" value="<?=$data->domain_name;?>">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Registrar</label>
-                            <input type="text" name="registrar" id="registrar" placeholder="Enter registrar" class="form-control" value="<?=$data->registrar; ?>">
+                            <input type="text" name="registrar" id="registrar" placeholder="Enter registrar" class="form-control" value="<?=$data->registrar;?>">
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Creation Date</label>
-                            <input type="text" name="creation_date" placeholder="Enter creation date" id="crdate" class="form-control " value="<?=date('d-m-Y',strtotime($data->creation_date)) ?>">
+                            <input type="text" name="creation_date" placeholder="Enter creation date" id="crdate" class="form-control " value="<?=date('d-m-Y', strtotime($data->creation_date))?>">
                         </div>
                     </div>
                 </div>
@@ -63,29 +63,29 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Note</label>
-                             <textarea class="form-control" name="note" placeholder="Enter note" rows="3"><?=$data->note; ?></textarea>
+                             <textarea class="form-control" name="note" placeholder="Enter note" rows="3"><?=$data->note;?></textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Expiry Date</label>
-                            <input type="text" name="expiry_date" placeholder="Enter expiry date" id="expdate" class="form-control" value="<?=date('d-m-Y',strtotime($data->expiry_date)) ?>">
+                            <input type="text" name="expiry_date" placeholder="Enter expiry date" id="expdate" class="form-control" value="<?=date('d-m-Y', strtotime($data->expiry_date))?>">
                         </div>
                     </div>
                 </div>
-                <?php 
-                    $currency='($)';
-                    if(!empty($amt_currency->currency)) { 
-                     $currency="(".$amt_currency->currency.")";
-                } ?>
+                <?php
+$currency = '($)';
+if (!empty($amt_currency->currency)) {
+	$currency = "(" . $amt_currency->currency . ")";
+}?>
                 <div class="row">
                     <div class="col-md-6">
                        <div class="form-group">
-                            <label>Amount {{ $currency }}</label>
-                            <input type="text" name="amount" placeholder="Enter amount" class="form-control" value="<?=$trans->amount; ?>">
+                            <label>Base Amount {{ $currency }}</label>
+                            <input type="text" name="amount" placeholder="Enter amount" class="form-control" value="<?=$data->transactions->amount;?>">
                         </div>
                     </div>
-           
+
                 </div>
                 <div class="row">
                     <div class="col-md-6">

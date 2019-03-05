@@ -20,11 +20,12 @@
                       <th>Sr. no.</th>
                       <th>Client Name</th>
                       <th>Provider</th>
+                      <th>Domain Name</th>
                       <th>Hosting Type</th>
-                      <th>Registration Date</th>
-                      <th>Expires On</th>
+                      <th>Reg. Date</th>
+                      <th>Exp. On</th>
                       <th>Remaining Days</th>
-                      <th>Amount</th>
+                      <th>Renewed On</th>
                       <th class="disabled-sorting">Actions</th>
                     </tr>
                   </thead>
@@ -33,11 +34,12 @@
                       <th>Sr. no.</th>
                       <th>Client Name</th>
                       <th>Provider</th>
+                      <th>Domain Name</th>
                       <th>Hosting Type</th>
-                      <th>Registration Date</th>
-                      <th>Expires On</th>
+                      <th>Reg. Date</th>
+                      <th>Exp. On</th>
                       <th>Remaining Days</th>
-                      <th>Amount</th>
+                       <th>Renewed On</th>
                       <th>Actions</th>
                     </tr>
                   </tfoot>
@@ -45,10 +47,11 @@
                     <?php
 $count = 0;
 foreach ($data as $row) {
+
 	$count++;
 	// for ($i = 1; $i <= $count; $i++) {
 
-	$date1 = new DateTime($row->start_date);
+	$date1 = new DateTime();
 	$date2 = new DateTime($row->end_date);
 	$diff = $date2->diff($date1)->format("%a");
 	$days = intval($diff);
@@ -57,17 +60,31 @@ foreach ($data as $row) {
                         <td>{{$count}}</td>
                         <td class="client_name">{{$row->clients->name}}</td>
                         <td>{{$row->hosting_provider}}</td>
+                        <td>{{$row->domain->domain_name??"None"}}</td> 
                         <td>{{$row->hosting_type}}</td>
                         <td class="creation_date">{{date('d-m-Y',strtotime($row->start_date))}}</td>
                         <td class="expiry_date">{{date('d-m-Y',strtotime($row->end_date))}}</td>
 
-
-                        <td class="remaining_days">{{ $days }}</td>
-                        <td class="amount"><?php
-// if ($row->transactions) {
-	if (($row->id == $row->transactions->hosting_id) && ($row->transactions->flag == 'hosting')) {?>
-                          {{$currency.  $row->transactions->amount}}</td>
-                          <?php }?>
+                        <?php   
+                              $current = date('Y-m-d');
+                              $start_date = strtotime($current); 
+                              $end_date = strtotime($row->end_date); 
+                              $diff = ($end_date - $start_date)/60/60/24;
+                              if($diff <= +45)
+                              {
+                                 
+                        ?>
+                        <td class="remaining_days" style="color:red;">{{ $diff }}</td>
+                        <?php
+                              }
+                              else
+                              {
+                        ?>
+                           <td class="remaining_days">{{ $diff }}</td>
+                        <?php
+                              }
+                        ?>
+                        <td>{{date('d-m-Y',strtotime($row->updated_at))}}</td>
                         <td>
                           {!! Form::open(['url' => 'hostings/'.$row->id,'method'=>'DELETE','class'=>'form-horizontal']) !!}
 
@@ -81,7 +98,21 @@ foreach ($data as $row) {
 
                           <a onClick="get_hosting_trans(this.id)" title="transactions"  class="btn btn-primary"  data-toggle="modal"   id="<?php echo $row->id; ?>" ><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a>
 
-                          <a href="#hosting_renew_modal" title="renew hosting"  class="btn btn-success hosting_renew_modal"  data-toggle="modal" data-id="<?php echo $row->id; ?>" data-clientid="<?php echo $row->client_id; ?>" data-end_date="<?php echo $row->end_date; ?>" ><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>
+                          <?php 
+                              $current = date('Y-m-d');
+                              $start_date = strtotime($current); 
+                              $end_date = strtotime($row->end_date); 
+                              $diff = ($end_date - $start_date)/60/60/24;
+                              if($diff <= +45)
+                              {
+                          ?>
+                          
+                          <a href="#hosting_renew_modal" title="renew hosting"  class="btn btn-success hosting_renew_modal"  data-toggle="modal" data-id="<?php echo $row->id; ?>" data-clientid="<?php echo $row->client_id; ?>" data-domainid="<?php echo $row->domain_id; ?>" data-end_date="<?php echo $row->end_date; ?>" ><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></a>
+
+                          <?php
+                              } 
+                          ?>
+                          
                           {!! Form::close() !!}
                         </td>
                       </tr>
@@ -134,6 +165,7 @@ foreach ($data as $row) {
 
 
           <input type="hidden" id="renew_hosting_id" name="renew_hosting_id" value="">
+          <input type="hidden" name="renew_domain_id" id="domain_id1" value=""> 
           <input type="hidden" id="renew_host_client_id" name="renew_host_client_id" value="">
            <input type="hidden" id="renew_end_date" name="renew_end_date" value="">
              <hr/>
@@ -173,7 +205,7 @@ foreach ($data as $row) {
           <hr/>
           <div class="col-md-6">
             <p id="total_year" style="font-size: 14px;">
-              <b>Hosting will be renwed for: </b>
+              <b>Hosting will be renewed for: </b>
           </p>
 
           </div>
@@ -193,8 +225,9 @@ foreach ($data as $row) {
   </div>
 </div>
 </div>
+
   <div class="modal fade" id="transactions_modal" role="dialog">
-   <div class="modal-dialog">
+   <div class="modal-dialog modal-lg" >
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>

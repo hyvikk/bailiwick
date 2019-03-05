@@ -17,6 +17,7 @@
     <link href="{{ asset('css/themify-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-datepicker.css') }}" rel="stylesheet">
+    @yield('css')
 
    <style>
 
@@ -241,13 +242,15 @@
     <script src="{{ asset('js/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('js/nouislider.min.js') }}"></script>
     <script src="{{ asset('js/es6-promise-auto.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap-checkbox-radio.js') }}"></script>
     <script src="{{ asset('js/paper-dashboard.js') }}"></script>
+    {{-- <script src="{{ asset('js/bootstrap-checkbox-radio.js') }}"></script> --}}
     <script src="{{ asset('js/jquery.datatables.js') }}"></script>
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
-    <script src="{{ asset('js/demo.js')}}"></script>
+    <script src="{{ asset('js/demo.js') }}"></script>
+    @yield('script')
+    {{-- <script src="{{ asset('js/app.js')}}"></script> --}}
     <script type="text/javascript">
         $(document).ready(function() {
             $('#datatables').DataTable({
@@ -377,7 +380,7 @@
           //alert(data);
         },
          error:function(){
-          alert("eoor");
+          alert("There is something wrong.Error");
              }
       });
   }
@@ -580,12 +583,16 @@ $(document).on('submit', '#domain_renew', function(event){
 });
 
 $('#hosting_renew_modal').on('show.bs.modal', function (e) {
+  console.log(e.relatedTarget);
   var id = $(e.relatedTarget).data('id');
   var client_id = $(e.relatedTarget).data('clientid');
   var end_date = $(e.relatedTarget).data('end_date');
+  var domain_id = $(e.relatedTarget).data('domainid');
   $('#renew_host_client_id').val(client_id);
   $('#renew_hosting_id').val(id);
   $('#renew_end_date').val(end_date);
+  $('#domain_id1').val(domain_id);
+ 
 })
 $('#hosting_renew_modal').on('hidden.bs.modal', function () {
     $('.hosting_renew_error').hide();
@@ -594,7 +601,7 @@ $('#hosting_renew_modal').on('hidden.bs.modal', function () {
 $(document).on('submit', '#hosting_renew', function(event){
    var info = $('.hosting_renew_error');
   event.preventDefault();
-  var data = { hosting_id: $("#renew_hosting_id").val(),client_id: $("#renew_host_client_id").val(), hosting_renew_year: $("#hosting_renew_year").val(),  hosting_renew_amount: $("#hosting_renew_amount").val(),end_date: $("#renew_end_date").val(),}
+  var data = { hosting_id: $("#renew_hosting_id").val(),client_id: $("#renew_host_client_id").val(), hosting_renew_year: $("#hosting_renew_year").val(),  hosting_renew_amount: $("#hosting_renew_amount").val(),end_date: $("#renew_end_date").val(),domain_id:$('#domain_id1').val(),}
     $.ajax({
       url: "hosting_renew",
       type: "GET",

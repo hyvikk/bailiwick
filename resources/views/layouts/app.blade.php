@@ -40,7 +40,7 @@
 
                                 <ul class="dropdown-menu" role="menu">
                                 <li>
-                                <a href="{{ route('changepass',array(Auth::user()->id))}}">Change Password</a>
+                                <a href="{{ url('changepass')}}">Change Password</a>
                                 </li>
                                     <li>
                                         <a href="{{ route('logout') }}"

@@ -12,21 +12,26 @@ if (!empty($amt_currency->currency)) {
       <th>Client Name</th>
       <th>Provider Name</th>
       <th>Amount</th>
+      <th>Date</th>
       <th>Remaining</th>
+
+      
       <?php
 $i = 0;
 $j = 0;
 $count = $trans->count();
 
+$temp = 0;
 foreach ($trans as $row) {
 
-	if (!is_null($payment_receipt) && $payment_receipt->count() > 0) {
+	if (!is_null($payment_receipt[$temp]) && $payment_receipt[$temp]->count() > 0) {
 
-		if ($sum == $row->amount) {
+		if ($sum[$temp] == $row->amount) {
 			$i += 1;
 		}
 		$j += 1;
 	}
+  $temp++;
 }
 if ($count != $i) {?>
       <th>Pay Receipt</th>
@@ -39,27 +44,42 @@ if ($j > 0) {?>
   </thead>
   <tbody>
     <?php
+    $temp = 0;
 foreach ($trans as $row) {
 	?>
     <tr>
       <td><?php echo $client_name->name; ?></td>
       <td><?php echo $dd->hosting_provider; ?></td>
       <td><?php echo $currency . $row->amount; ?></td>
+      <?php 
+      if (is_null($payment_receipt[$temp])) {
 
+
+      ?>
+      <td></td>
       <?php
+        }
+        else
+        {
+        ?>
+         <td>{{date('d-m-Y',strtotime($row->payment_receipt->updated_at??"None"))}}</td>
+      <?php
+
+    }
 //$payment_receipt = Transactions::find($row->id)->payment_receipt;
-	if (is_null($payment_receipt) || $payment_receipt->count() < 1) {?>
+	if (is_null($payment_receipt[$temp]) || $payment_receipt[$temp]->count() < 1) {?>
       <td><?php echo $currency . $row->amount; ?></td>
       <td>
         <a title="payment receipt" class="btn btn-primary" href="#hosting_receipt_modal" data-toggle="modal" data-dismiss="modal" data-id="<?php echo $row->id; ?>" data-clientid="<?php echo $row->client_id; ?>"><i class="ti-receipt"></i></a>
       </td>
       <?php
 }
-	if (!is_null($payment_receipt) && $payment_receipt->count() > 0) {
+	if (!is_null($payment_receipt[$temp]) && $payment_receipt[$temp]->count() > 0) {
 		//	$sum = Paymentreceipt::sum_amount($row->id);
-		if ($sum < $row->amount) {
-			$rem = $row->amount - $sum;
+		if ($sum[$temp] < $row->amount) {
+			$rem = $row->amount - $sum[$temp];
 			$rem_amount = number_format($rem, 2, '.', ',')
+
 			?>
       <td><?php echo $currency . $rem_amount; ?></td>
       <td>
@@ -70,7 +90,7 @@ foreach ($trans as $row) {
      </td>
      <?php
 }
-		if ($sum == $row->amount) {?>
+		if ($sum[$temp] == $row->amount) {?>
      <td>0</td>
      <?php if ($count != $i) {?>
      <td></td>
@@ -84,7 +104,8 @@ foreach ($trans as $row) {
 	?>
    </tr>
    <?php
-}
+   $temp++;
+} //end of foreach
 ?>
  </tbody>
 </table>

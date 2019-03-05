@@ -10,6 +10,6 @@ class Domains extends Model {
 	}
 
 	public function transactions() {
-		return $this->hasOne('App\Transactions', 'domain_id');
+		return $this->hasOne('App\Transactions', 'domain_id', 'id');
 	}
 }

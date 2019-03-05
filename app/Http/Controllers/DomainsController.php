@@ -14,6 +14,7 @@ class DomainsController extends Controller {
 	public function index() {
 		$index['data'] = Domains::get();
 		$index['page'] = 'domains';
+
 		$index['amt_currency'] = Currency::select('currency')->first();
 		return view("domains.index", $index);
 	}
@@ -70,9 +71,9 @@ class DomainsController extends Controller {
 
 	public function edit($id) {
 		$index['data'] = Domains::whereId($id)->first();
-		$index['trans'] = Transactions::where('attach_id', '=', $id)
-			->where('flag', '=', 'domain')
-			->first();
+		// $index['trans'] = Transactions::where('attach_id', '=', $id)
+		// 	->where('flag', '=', 'domain')
+		// 	->first();
 		$index['clients'] = Clients::select('id', 'name')->get();
 		$index['amt_currency'] = Currency::select('currency')->first();
 		$index['page'] = 'domains';
@@ -135,11 +136,12 @@ class DomainsController extends Controller {
 			->where('flag', '=', 'domain')
 			->get();
 		$index['amt_currency'] = Currency::select('currency')->first();
+		$i=0;
 		foreach ($index['trans'] as $row) {
-			$index['payment_receipt'] = Transactions::find($row->id)->payment_receipt;
-			$index['sum'] = Paymentreceipt::sum_amount($row->id);
+			$index['payment_receipt'][$i] = Transactions::find($row->id)->payment_receipt;
+			$index['sum'][$i] = Paymentreceipt::sum_amount($row->id);
 			$index['dd'] = Domains::select('domain_name')->where('id', '=', $row->attach_id)->first();
-			$index['payment_receipt'] = Transactions::find($row->id)->payment_receipt;
+			$i++;
 		}
 		$index['client_name'] = Clients::select('name')
 			->where('id', '=', $index['trans'][0]['client_id'])
@@ -164,7 +166,9 @@ class DomainsController extends Controller {
 			$paymentreceipt->payment_type = $request->domain_payment_type;
 			$paymentreceipt->amount = $request->domain_amount;
 			$paymentreceipt->save();
-			return \Response::json(array('success' => true));
+			return response()->json([
+				'success' => true,
+			]);
 		}
 
 	}
@@ -184,6 +188,7 @@ class DomainsController extends Controller {
 	}
 
 	public function renew_domain(Request $request) {
+		
 		$domain_id = $request->domain_id;
 		$client_id = $request->client_id;
 		$domain_renew_year = $request->domain_renew_year;
@@ -203,6 +208,7 @@ class DomainsController extends Controller {
 			$Transaction = new Transactions;
 			$Transaction->flag = 'domain';
 			$Transaction->attach_id = $domain_id;
+			$Transaction->domain_id = $domain_id;
 			$Transaction->client_id = $client_id;
 			$Transaction->amount = $domain_renew_amount;
 			$Transaction->year = $domain_renew_year;
