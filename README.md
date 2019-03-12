@@ -2,7 +2,7 @@
 
 A Domain Management System that can manage all your Domains and Hostings. If you’re a Domain & Hosting Provider and want to manage these things then this is a handy Web App.
 
-# Client Management
+### Client Management
 
 
 Allows you to manage multiple clients efficiently.  A capability of filtering domains by client name helps companies to manage their domain portfolio across several domains.
